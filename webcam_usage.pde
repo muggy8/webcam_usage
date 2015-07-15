@@ -24,7 +24,7 @@ float bright = 2f;
 boolean scaleMode = false;
 float scaleRate = 1f;
 
-float trackDifference = 0.5;
+int trackDifference = 20;
 
 
 void setup() {
@@ -48,7 +48,7 @@ void setup() {
     
     // The camera can be initialized directly using an 
     // element from the array returned by list():
-    cam = new Capture(this, cameras[6]);
+    cam = new Capture(this, cameras[43]);
     cam.start();     
   }   
   img = createImage(resX, resY, RGB);  
@@ -85,7 +85,7 @@ void draw() {
     
     //img = loadImage(cam);
     img.copy(cam, 0, 0, cam.width, cam.height, 0, 0, cam.width, cam.height);
-    imgEnhanced = new PImage(img.width, img.height);  
+    //imgEnhanced = new PImage(img.width, img.height);  
     if (calabMode){
       contrast = 5f * ( mouseX / (float)width); //value should go from 0 to 5
       bright = 255 * ( mouseY / (float)width  - 0.5); //value should go from -128 to +128
@@ -102,6 +102,7 @@ void draw() {
     }
     
     for (int i = 0 ; i < crosshares.length; i++){
+      println(i);
       crosshares[i].x = map (crosshares[i].x, 0, resX, 0, width);
       crosshares[i].y = map (crosshares[i].y, 0, resY, 0, height);
       
@@ -144,10 +145,16 @@ void draw() {
 
 void mousePressed() {
   img.loadPixels();
-  int x = map(mouseX, 0, width, 0, resX);
-  int y = map(mouseY, 0, height, 0, resY);
-  
-  println(img.pixels[x*y].);
+  int x = (int)map(mouseX, 0, width, 0, resX);
+  int y = (int)map(mouseY, 0, height, 0, resY);
+  int c = img.pixels[x*y];
+  println("Color:" + c);
+  int r = (c >> 16) & 0xFF; 
+  int g = (c >> 8) & 0xFF;
+  int b = c & 0xFF;  
+  println("R: " + r + ", G: " + g + ", B: " + b);
+  float[] hsl = rgbToHsl(r,g,b);
+  println("H: " + hsl[0] + ", S: " + hsl[1] + ", L: " + hsl[2]);
 }
 
 PVector[] ContrastAndBrightness(PImage input, PImage output,float cont,float bright, color[] target)
@@ -276,6 +283,9 @@ PVector[] hslTrack(PImage img,  color[] targets){
    int h = img.height;
    
    PVector[] returnVectors = new PVector[4];
+   for (int i = 0; i < returnVectors.length; i++){
+     returnVectors[i] = new PVector(0,0);
+   }
    
    ArrayList<PVector> pxLocation0 = new ArrayList<PVector>();
    ArrayList<PVector> pxLocation1 = new ArrayList<PVector>();
@@ -415,7 +425,7 @@ float[] rgbToHsl(int pR, int pG, int pB) {
         h /= 6.0f;
     }
 
-    float[] hsl = {h, s, l};
+    float[] hsl = {h*360, s*100, l*100};
     return hsl;
 }
 
