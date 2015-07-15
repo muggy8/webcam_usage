@@ -31,7 +31,7 @@ void setup() {
   size(1280, 960);
   
   trackColor = color(255,0,0);
-  trackColors[0] = color(252,128,0);
+  trackColors[0] = color(252,0,0);
   trackColors[1] = color(0,252,0);
   trackColors[2] = color(0,0,252);
   trackColors[3] = color(227,224,41);
@@ -48,7 +48,7 @@ void setup() {
     
     // The camera can be initialized directly using an 
     // element from the array returned by list():
-    cam = new Capture(this, cameras[43]);
+    cam = new Capture(this, cameras[21]);
     cam.start();     
   }   
   img = createImage(resX, resY, RGB);  
@@ -61,7 +61,7 @@ void setup() {
 }
 
 void draw() {
-  background(255);
+  background(170);
   
   pushMatrix();
   
@@ -85,20 +85,23 @@ void draw() {
     
     //img = loadImage(cam);
     img.copy(cam, 0, 0, cam.width, cam.height, 0, 0, cam.width, cam.height);
-    //imgEnhanced = new PImage(img.width, img.height);  
+    imgEnhanced = new PImage(img.width, img.height);  
     if (calabMode){
       contrast = 5f * ( mouseX / (float)width); //value should go from 0 to 5
       bright = 255 * ( mouseY / (float)width  - 0.5); //value should go from -128 to +128
       // contrast=5;
       // bright=2;
     }
-    //PVector crosshare = ContrastAndBrightness(img,imgEnhanced, contrast,bright, trackColor); 
+    //ContrastAndBrightness(img,imgEnhanced, contrast,bright); 
     //PVector crosshare = track(imgEnhanced, trackColor);
-    PVector[] crosshares = hslTrack(img, trackColors); 
     
+    //PVector[] crosshares = hslTrack(imgEnhanced, trackColors); 
+    PVector[] crosshares = hslTrack(img, trackColors);
     
     if (!presentMode){
       image(img, 0,0, width, height); 
+    }else if (presentMode && calabMode){
+      image(img, 0, 0);
     }
     
     for (int i = 0 ; i < crosshares.length; i++){
@@ -145,8 +148,17 @@ void draw() {
 
 void mousePressed() {
   img.loadPixels();
-  int x = (int)map(mouseX, 0, width, 0, resX);
-  int y = (int)map(mouseY, 0, height, 0, resY);
+  int x = 0;
+  int y = 0;
+  if (!calabMode && !presentMode){
+    x = (int)map(mouseX, 0, width, 0, resX);
+    y = (int)map(mouseY, 0, height, 0, resY);
+  }
+  else if (calabMode && presentMode){
+    x = mouseX;
+    y = mouseY;
+  }
+  
   int c = img.pixels[x*y];
   println("Color:" + c);
   int r = (c >> 16) & 0xFF; 
@@ -157,34 +169,26 @@ void mousePressed() {
   println("H: " + hsl[0] + ", S: " + hsl[1] + ", L: " + hsl[2]);
 }
 
-PVector[] ContrastAndBrightness(PImage input, PImage output,float cont,float bright, color[] target)
+void ContrastAndBrightness(PImage input, PImage output,float cont,float bright)
 { // function from: http://forum.processing.org/one/topic/increase-contrast-of-an-image.html 
   // added all the other crazy functions into this one as well. 
    int w = input.width;
    int h = input.height;
    
-   PVector[] returnVectors = new PVector[4];
-   for (int i = 0; i < returnVectors.length; i++){
-     returnVectors[i] = new PVector(0,0);
-   }
+   
    
    //our assumption is the image sizes are the same
    //so test this here and if it's not true just return with a warning
    if(w != output.width || h != output.height)
    {
      println("error: image dimensions must agree");
-     return returnVectors;
+     return;
    }
    
    //this is required before manipulating the image pixels directly
    input.loadPixels();
    output.loadPixels();
    
-   ArrayList<PVector> pxLocation0 = new ArrayList<PVector>();
-   ArrayList<PVector> pxLocation1 = new ArrayList<PVector>();
-   ArrayList<PVector> pxLocation2 = new ArrayList<PVector>();
-   ArrayList<PVector> pxLocation3 = new ArrayList<PVector>();
-      
    //loop through all pixels in the image
    for(int i = 0; i < w*h; i++)
    {  
@@ -212,70 +216,12 @@ PVector[] ContrastAndBrightness(PImage input, PImage output,float cont,float bri
        color outputPx = 0xff000000 | (r << 16) | (g << 8) | b; 
        output.pixels[i]= outputPx; 
        
-       for (int j = 0; j < target.length; j++){
-         int currR2 = (target[j] >> 16) & 0xFF; 
-         int currG2 = (target[j] >> 8) & 0xFF;
-         int currB2 = target[j] & 0xFF;
-         
-         float[] hsl1 = rgbToHsl(r,g,b);
-         float[] hsl2 = rgbToHsl(currR2, currG2, currB2);
-         
-         float distance = 0;
-         distance = abs(hsl1[0]-hsl2[0]);
-         //println(hsl1, hsl2);
-         
-         // why does Java not have JSON -.-
-         if (distance < trackDifference && j == 0){
-           int x = i%img.width;
-           int y = i/img.width;
-           //println(distance, x, y);
-           pxLocation0.add(new PVector(x,y));
-         }
-         if (distance < trackDifference && j == 1){
-           int x = i%img.width;
-           int y = i/img.width;
-           //println(distance, x, y);
-           pxLocation1.add(new PVector(x,y));
-         }
-         if (distance < trackDifference && j == 2){
-           int x = i%img.width;
-           int y = i/img.width;
-           //println(distance, x, y);
-           pxLocation2.add(new PVector(x,y));
-         }
-         if (distance < trackDifference && j == 3){
-           int x = i%img.width;
-           int y = i/img.width;
-           //println(distance, x, y);
-           pxLocation3.add(new PVector(x,y));
-         }
-       }
    }
    
    //so that we can display the new image we must call this for each image
    input.updatePixels();
    output.updatePixels();
-   
-   //Java seriousely need to consider implementing JSON as a possiable data type.
-   if (pxLocation0.size() >= 2){
-     returnVectors[0] = avarageVectors(pxLocation0);
-   }
-   
-   if (pxLocation1.size() >= 2){
-     returnVectors[1] = avarageVectors(pxLocation1);
-   }
-   
-   if (pxLocation2.size() >= 2){
-     returnVectors[2] = avarageVectors(pxLocation2);
-   }
-   
-   if (pxLocation3.size() >= 2){
-     returnVectors[3] = avarageVectors(pxLocation3);
-   }
-   
-   return returnVectors;
-   
-   
+   return ;
 }
 
 PVector[] hslTrack(PImage img,  color[] targets){
