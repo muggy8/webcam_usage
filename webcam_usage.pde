@@ -24,14 +24,14 @@ float bright = 2f;
 boolean scaleMode = false;
 float scaleRate = 1f;
 
-int trackDifference = 20;
+int trackDifference = 25;
 
 
 void setup() {
   size(1280, 960);
   
   trackColor = color(255,0,0);
-  trackColors[0] = color(252,0,0);
+  trackColors[0] = color(252,128,0);
   trackColors[1] = color(0,252,0);
   trackColors[2] = color(0,0,252);
   trackColors[3] = color(227,224,41);
@@ -102,7 +102,7 @@ void draw() {
     }
     
     for (int i = 0 ; i < crosshares.length; i++){
-      println(i);
+      //println(i);
       crosshares[i].x = map (crosshares[i].x, 0, resX, 0, width);
       crosshares[i].y = map (crosshares[i].y, 0, resY, 0, height);
       
@@ -317,26 +317,28 @@ PVector[] hslTrack(PImage img,  color[] targets){
        */
        
        float hDifference = abs(hsl1[0]-hsl2[0]);
+       float sDifference = abs(hsl1[1]-hsl2[1]);
+       float lDifference = abs(hsl1[2]-hsl2[2]);
        
-       if (hDifference < trackDifference && j == 0){
+       if (hDifference < trackDifference && sDifference < trackDifference && lDifference < trackDifference && j == 0){
          int x = i%img.width;
          int y = i/img.width;
          //println(distance, x, y);
          pxLocation0.add(new PVector(x,y));
        }
-       if (hDifference < trackDifference && j == 1){
+       if (hDifference < trackDifference && sDifference < trackDifference && lDifference < trackDifference && j == 1){
          int x = i%img.width;
          int y = i/img.width;
          //println(distance, x, y);
          pxLocation1.add(new PVector(x,y));
        }
-       if (hDifference < trackDifference && j == 2){
+       if (hDifference < trackDifference && sDifference < trackDifference && lDifference < trackDifference && j == 2){
          int x = i%img.width;
          int y = i/img.width;
          //println(distance, x, y);
          pxLocation2.add(new PVector(x,y));
        }
-       if (hDifference < trackDifference && j == 3){
+       if (hDifference < trackDifference && sDifference < trackDifference && lDifference < trackDifference && j == 3){
          int x = i%img.width;
          int y = i/img.width;
          //println(distance, x, y);
