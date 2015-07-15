@@ -10,7 +10,7 @@ class Particle {
     acceleration = new PVector(0,0.05);
     velocity = new PVector(random(-1,1),random(-2,0));
     location = l.get();
-    lifespan = 255.0;
+    lifespan = 60.0;
     display = loadImage("Vine75px/Vine75px" + round(random(1,3)) + ".png");
     rotation = 0;
   }
@@ -19,7 +19,7 @@ class Particle {
     acceleration = new PVector(0,0.05);
     velocity = new PVector(random(-1,1),random(-2,0));
     location = l.get();
-    lifespan = 255.0;
+    lifespan = 60.0;
     display = loadImage("Vine75px/Vine75px" + round(random(1,3)) + ".png");
     rotation = angle;
   }
