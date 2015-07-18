@@ -12,8 +12,8 @@ Capture cam;
 color trackColor;
 color[] trackColors = new color[4];
 
-int resX = 176;
-int resY = 144;
+int resX = 160;
+int resY = 120;
 
 boolean calabMode = false;
 boolean presentMode = false;
@@ -28,11 +28,11 @@ int trackDifference = 25;
 
 
 void setup() {
-  size(1200, 720);
+  size(1300, 950);
   
-  trackColor = color(255,0,0);
+  trackColor = color(255,140,140);
   trackColors[0] = color(252,0,0);
-  trackColors[1] = color(0,252,0);
+  trackColors[1] = color(96,208,170);
   trackColors[2] = color(0,0,252);
   trackColors[3] = color(227,224,41);
 
@@ -48,7 +48,7 @@ void setup() {
     
     // The camera can be initialized directly using an 
     // element from the array returned by list():
-    cam = new Capture(this, cameras[43]);
+    cam = new Capture(this, cameras[36]);
     cam.start();     
   }   
   img = createImage(resX, resY, RGB);  
@@ -158,8 +158,9 @@ void mousePressed() {
     x = mouseX;
     y = mouseY;
   }
+  int c = 0;
   if (x*y <= img.pixels.length){
-    int c = img.pixels[x*y];
+     c= img.pixels[x*y];
   }
   println("Color:" + c);
   int r = (c >> 16) & 0xFF; 
