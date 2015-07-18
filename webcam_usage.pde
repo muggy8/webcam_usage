@@ -31,10 +31,10 @@ void setup() {
   size(1300, 950);
   
   trackColor = color(255,140,140);
-  trackColors[0] = color(252,0,0);
+  trackColors[0] = color(255,140,140);
   trackColors[1] = color(96,208,170);
-  trackColors[2] = color(0,0,252);
-  trackColors[3] = color(227,224,41);
+  trackColors[2] = color(255,140,140);
+  trackColors[3] = color(96,208,170);
 
   String[] cameras = Capture.list();
   if (cameras.length == 0) {
