@@ -1,10 +1,17 @@
+import processing.video.*;
+//press nothing is our webcam part, if we press the "s" key can change to "all in one" video
+//press "a" can back to our webcam screen
+Movie theMov;
+Movie theMov2;
+Movie theMov3;
+Movie theMov4;
+int movieType = 0;
 PImage img;
 PImage imgEnhanced;
 ParticleSystem ps; // partical system reference from: https://processing.org/examples/simpleparticlesystem.html
 
 ParticleSystem[] pss = new ParticleSystem[4];
 
-import processing.video.*; 
 // code for capturing from webcam from: https://processing.org/reference/libraries/video/Capture.html
 // using pimage with camera capture from: http://forum.processing.org/one/topic/manipulate-pixels-from-capture-image.html
 
@@ -48,7 +55,8 @@ void setup() {
     
     // The camera can be initialized directly using an 
     // element from the array returned by list():
-    cam = new Capture(this, cameras[36]);
+//    cam = new Capture(this, cameras[36]);
+    cam = new Capture(this, cameras[6]);
     cam.start();     
   }   
   img = createImage(resX, resY, RGB);  
@@ -58,10 +66,23 @@ void setup() {
   pss[1] = new ParticleSystem(new PVector(width/2,50));
   pss[2] = new ParticleSystem(new PVector(width/2,50));
   pss[3] = new ParticleSystem(new PVector(width/2,50));
+  
+  theMov = new Movie(this, "All In One_REMADE.mp4");
+  theMov.loop();
+  theMov2 = new Movie(this, "First 2 Minutes White.mp4");
+  theMov2.loop();
+  theMov3 = new Movie(this, "Grows and Wind Comes in.mp4");
+  theMov3.loop();
+  theMov4 = new Movie(this, "Buildings.mp4");
+  theMov4.loop();
 }
 
 void draw() {
-  background(170);
+  
+  
+  switch(movieType) {
+  case 0:
+    background(170);
   
   pushMatrix();
   
@@ -143,6 +164,44 @@ void draw() {
       stroke(trackColors[i]);
       rect(50*i,0,50,50);
     }
+  }  
+    break; 
+  case 1:
+//    background(255, 0, 0);
+    theMov.read();
+    theMov.play();
+    theMov2.stop();
+    theMov3.stop();
+    theMov4.stop();
+    image(theMov, 0, 0, width, height);
+    break;
+  case 2:
+//    background(0, 255, 0); 
+    theMov2.read();
+    theMov2.play();
+    theMov.stop();
+    theMov3.stop();
+    theMov4.stop();
+    image(theMov2, 0, 0, width, height);
+    break;
+  case 3:
+//    background(0, 255, 0); 
+    theMov3.read();
+    theMov3.play();
+    theMov.stop();
+    theMov2.stop();
+    theMov4.stop();
+    image(theMov3, 0, 0, width, height);
+    break;
+  case 4:
+//    background(0, 255, 0); 
+    theMov4.read();
+    theMov4.play();
+    theMov.stop();
+    theMov2.stop();
+    theMov3.stop();
+    image(theMov4, 0, 0, width, height);
+    break;
   }
 }
 
@@ -407,5 +466,19 @@ void keyPressed() {
     scaleMode = !scaleMode;
   } else if (key == 'w'){
     ps.wind();
+  }
+  
+  println(key);
+
+  if (key == 'a') {
+    movieType = 0;
+  } else if (key == 's') {
+    movieType = 1;
+  } else if (key == '1') {
+    movieType = 2;
+  } else if (key == '2') {
+    movieType = 3;
+  } else if (key == '3') {
+    movieType = 4;
   }
 }
