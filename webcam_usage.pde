@@ -458,8 +458,9 @@ int colorCompare( int colour1, int colour2 )
 } 
 
 void keyPressed() {
-  if (key == ' ') {
+  if (key == 'a' ) {
     presentMode = !presentMode;
+    movieType = 0;
   } else if (key == '9') {
     calabMode = !calabMode;
   } else if (key == '8'){
@@ -470,15 +471,18 @@ void keyPressed() {
   
   println(key);
 
-  if (key == 'a') {
-    movieType = 0;
-  } else if (key == 's') {
+  if (key == 's') {
     movieType = 1;
-  } else if (key == '1') {
+  }
+  if (key == '1') {
     movieType = 2;
-  } else if (key == '2') {
+  } 
+  
+  if (key == '2') {
     movieType = 3;
-  } else if (key == '3') {
+  } 
+  
+  if (key == '3') {
     movieType = 4;
   }
 }
