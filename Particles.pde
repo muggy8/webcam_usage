@@ -7,7 +7,8 @@ class Particle {
   float rotation; 
 
   Particle(PVector l) {
-    acceleration = new PVector(0,0.05);
+    //acceleration = new PVector(0.05,0);
+    acceleration = new PVector(0,0);
     velocity = new PVector(random(-1,1),random(-2,0));
     location = l.get();
     lifespan = 60.0;
@@ -16,12 +17,26 @@ class Particle {
   }
   
   Particle(PVector l, float angle) {
-    acceleration = new PVector(0,0.05);
+    //acceleration = new PVector(0.05,0);
+    acceleration = new PVector(0,0);
     velocity = new PVector(random(-1,1),random(-2,0));
     location = l.get();
     lifespan = 60.0;
     display = loadImage("Vine75px/Vine75px" + round(random(1,3)) + ".png");
     rotation = angle;
+  }
+  
+  void setLifespan( float life){
+    lifespan = life;
+  }
+  
+  void setWind(boolean tog){
+    if (tog){
+      acceleration = new PVector(0.05,0);
+    }
+    else{
+      acceleration = new PVector(0,0);
+    }
   }
 
   void run() {
@@ -31,8 +46,8 @@ class Particle {
 
   // Method to update location
   void update() {
-    //velocity.add(acceleration);
-    //location.add(velocity);
+    velocity.add(acceleration);
+    location.add(velocity);
     lifespan -= 1.0;
   }
 
