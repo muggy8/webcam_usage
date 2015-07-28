@@ -405,5 +405,7 @@ void keyPressed() {
     calabMode = !calabMode;
   } else if (key == '8'){
     scaleMode = !scaleMode;
+  } else if (key == 'w'){
+    ps.wind();
   }
 }

@@ -40,4 +40,11 @@ class ParticleSystem {
       origin = coord.get();
     }
   }
+  
+  void wind(){
+    for (int i = particles.size()-1; i >= 0; i--) {
+      Particle p = particles.get(i);
+      p.setWind(true);
+    }
+  }
 }
