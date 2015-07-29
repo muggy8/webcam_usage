@@ -15,7 +15,7 @@ class ParticleSystem {
   void addParticle() {
     PVector avarage;
     avarage = new PVector((origin.x+previousO.x)/2, (origin.y+previousO.y)/2);
-    if (origin.dist(lastSpawn) > 55){
+    if (origin.dist(lastSpawn) > 35){
       float deltaX = lastSpawn.x - origin.x;
       float deltaY = lastSpawn.y - origin.y;
       float ang = atan(deltaY/deltaX);
