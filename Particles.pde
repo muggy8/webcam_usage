@@ -60,6 +60,7 @@ class Particle {
     pushMatrix();
     translate(location.x-display.width/2, location.y-display.height/2);
     rotate(rotation);
+    tint(255, 255-lifespan);
     image(display, -75/2, -75/2);
     popMatrix();
 
@@ -68,10 +69,11 @@ class Particle {
     lifespan += 4.25;
     // alphaVal= alphaVal-8.5;
     // }
+    /*
     noStroke(); 
     fill(170, 170, 170, lifespan);
     rectMode(CENTER);
-    ellipse(location.x-30, location.y-30, 100, 100);
+    ellipse(location.x-30, location.y-30, 100, 100);*/
   }
 
   // Is the particle still useful?
