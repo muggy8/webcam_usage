@@ -5,6 +5,7 @@ class Particle {
   float lifespan;
   PImage display;
   float rotation; 
+  float ageRate = 4.25;
   //  float alphaVal = 255;
 
   Particle(PVector l) {
@@ -35,10 +36,14 @@ class Particle {
 
   void setWind(boolean tog) {
     if (tog) {
-      acceleration = new PVector(0.05, 0);
+      acceleration = new PVector(0.15, 0);
     } else {
       acceleration = new PVector(0, 0);
     }
+  }
+  
+  void freez(){
+    ageRate = 0;
   }
 
   void run() {
@@ -66,7 +71,7 @@ class Particle {
 
     //    if (lifespan <= 0) {
     //    } else { 
-    lifespan += 4.25;
+    lifespan += ageRate;
     // alphaVal= alphaVal-8.5;
     // }
     /*

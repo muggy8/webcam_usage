@@ -1,6 +1,12 @@
 import processing.video.*;
 //press nothing is our webcam part, if we press the "s" key can change to "all in one" video
 //press "a" can back to our webcam screen
+
+//press 'o' at 1:15
+//press 'w' at 2:04
+//press 'u' at 2:21
+//press '4' at 2:45
+
 Movie theMov;
 Movie theMov2;
 Movie theMov3;
@@ -37,11 +43,11 @@ int trackDifference = 25;
 void setup() {
   size(1300, 950);
   
-  trackColor = color(255,140,140);
-  trackColors[0] = color(255,140,140);
-  trackColors[1] = color(96,208,170);
-  trackColors[2] = color(255,140,140);
-  trackColors[3] = color(96,208,170);
+  trackColor = color(27,112,90);
+  trackColors[0] = color(202,80,67);
+  trackColors[1] = color(61,253,253);
+  trackColors[2] = color(202,80,67);
+  trackColors[3] = color(61,253,253);
 
   String[] cameras = Capture.list();
   if (cameras.length == 0) {
@@ -56,7 +62,7 @@ void setup() {
     // The camera can be initialized directly using an 
     // element from the array returned by list():
 //    cam = new Capture(this, cameras[36]);
-    cam = new Capture(this, cameras[6]);
+    cam = new Capture(this, cameras[36]);
     cam.start();     
   }   
   img = createImage(resX, resY, RGB);  
@@ -67,9 +73,9 @@ void setup() {
   pss[2] = new ParticleSystem(new PVector(width/2,50));
   pss[3] = new ParticleSystem(new PVector(width/2,50));
   
-  theMov = new Movie(this, "All In One_REMADE.mp4");
+  theMov = new Movie(this, "Wind.mp4");
   theMov.loop();
-  theMov2 = new Movie(this, "First 2 Minutes White.mp4");
+  theMov2 = new Movie(this, "Grows and Wind Comes in.mp4");
   theMov2.loop();
   theMov3 = new Movie(this, "Grows and Wind Comes in.mp4");
   theMov3.loop();
@@ -79,52 +85,46 @@ void setup() {
 
 void draw() {
   
-  
-  switch(movieType) {
-  case 0:
-    background(170);
+  background(170);
   
   pushMatrix();
   
-    scale(scaleRate);
-    
-    float moveUp = 0;
-    float moveLeft = 0;
-    
-    moveUp = ((scaleRate*height)-height)/2;
-    moveLeft = ((scaleRate*width)-width)/2;
-    
-    translate(-moveLeft, -moveUp);
-    
-    if (scaleMode){
-      scaleRate = map(mouseY, 0.0, height, 0.0, 3.0);
-    }
-    
-    if (cam.available() == true) {
-      cam.read();
-    }
-    
-    //img = loadImage(cam);
-    img.copy(cam, 0, 0, cam.width, cam.height, 0, 0, cam.width, cam.height);
-    imgEnhanced = new PImage(img.width, img.height);  
-    if (calabMode){
-      contrast = 5f * ( mouseX / (float)width); //value should go from 0 to 5
-      bright = 255 * ( mouseY / (float)width  - 0.5); //value should go from -128 to +128
-      // contrast=5;
-      // bright=2;
-    }
-    //ContrastAndBrightness(img,imgEnhanced, contrast,bright); 
-    //PVector crosshare = track(imgEnhanced, trackColor);
-    
-    //PVector[] crosshares = hslTrack(imgEnhanced, trackColors); 
-    PVector[] crosshares = hslTrack(img, trackColors);
-    
+  scale(scaleRate);
+  
+  
+  float moveUp = 0;
+  float moveLeft = 0;
+  
+  moveUp = ((scaleRate*height)-height)/2;
+  moveLeft = ((scaleRate*width)-width)/2;
+  
+  translate(-moveLeft, -moveUp);
+  
+  if (scaleMode){
+    scaleRate = map(mouseY, 0.0, height, 0.0, 3.0);
+  }
+  
+  if (cam.available() == true) {
+    cam.read();
+  }
+  
+  img.copy(cam, 0, 0, cam.width, cam.height, 0, 0, cam.width, cam.height); 
+  PVector[] crosshares = hslTrack(img, trackColors);
+  
+  switch(movieType) {
+  case 0:
+  
+    theMov.stop();
+    theMov2.stop();
+    theMov3.stop();
+    theMov4.stop();
+  
+    tint(255,255);
     if (!presentMode){
       image(img, 0,0, width, height); 
     }else if (presentMode && calabMode){
       image(img, 0, 0);
     }
-    
     for (int i = 0 ; i < crosshares.length; i++){
       //println(i);
       crosshares[i].x = map (crosshares[i].x, 0, resX, 0, width);
@@ -143,21 +143,6 @@ void draw() {
       pss[i].run();
     }
     
-    /*
-    noFill();
-    stroke(255);
-    if (!presentMode){
-      int rectSize = 50;
-      line(crosshare.x, crosshare.y-rectSize/2, crosshare.x, crosshare.y+rectSize/2);
-      line(crosshare.x-rectSize/2, crosshare.y, crosshare.x+rectSize/2, crosshare.y);
-    }
-    ps.origin(crosshare);
-    
-    ps.addParticle();
-    ps.run();
-    */
-  popMatrix();
-  
   if (!presentMode){
     for (int i = 0; i < trackColors.length; i++){
       fill(trackColors[i]);
@@ -173,7 +158,26 @@ void draw() {
     theMov2.stop();
     theMov3.stop();
     theMov4.stop();
+    tint(255,255);
     image(theMov, 0, 0, width, height);
+    
+    for (int i = 0 ; i < crosshares.length; i++){
+      //println(i);
+      crosshares[i].x = map (crosshares[i].x, 0, resX, 0, width);
+      crosshares[i].y = map (crosshares[i].y, 0, resY, 0, height);
+      
+      noFill();
+      stroke(255);
+      if (!presentMode){
+        int rectSize = 50;
+        line(crosshares[i].x, crosshares[i].y-rectSize/2, crosshares[i].x, crosshares[i].y+rectSize/2);
+        line(crosshares[i].x-rectSize/2, crosshares[i].y, crosshares[i].x+rectSize/2, crosshares[i].y);
+      }
+      pss[i].origin(crosshares[i]);
+      
+      pss[i].addParticle();
+      pss[i].run();
+    }
     break;
   case 2:
 //    background(0, 255, 0); 
@@ -182,7 +186,26 @@ void draw() {
     theMov.stop();
     theMov3.stop();
     theMov4.stop();
+    tint(255,255);
     image(theMov2, 0, 0, width, height);
+    
+    for (int i = 0 ; i < crosshares.length; i++){
+      //println(i);
+      crosshares[i].x = map (crosshares[i].x, 0, resX, 0, width);
+      crosshares[i].y = map (crosshares[i].y, 0, resY, 0, height);
+      
+      noFill();
+      stroke(255);
+      if (!presentMode){
+        int rectSize = 50;
+        line(crosshares[i].x, crosshares[i].y-rectSize/2, crosshares[i].x, crosshares[i].y+rectSize/2);
+        line(crosshares[i].x-rectSize/2, crosshares[i].y, crosshares[i].x+rectSize/2, crosshares[i].y);
+      }
+      pss[i].origin(crosshares[i]);
+      
+      pss[i].addParticle();
+      pss[i].run();
+    }
     break;
   case 3:
 //    background(0, 255, 0); 
@@ -191,7 +214,11 @@ void draw() {
     theMov.stop();
     theMov2.stop();
     theMov4.stop();
+    popMatrix();
+    tint(255,255);
     image(theMov3, 0, 0, width, height);
+    pushMatrix();
+    
     break;
   case 4:
 //    background(0, 255, 0); 
@@ -200,9 +227,18 @@ void draw() {
     theMov.stop();
     theMov2.stop();
     theMov3.stop();
+    popMatrix();
+    tint(255,255);
     image(theMov4, 0, 0, width, height);
+    pushMatrix();
+    break;
+  case 5:
+    background(0, 0, 0); 
     break;
   }
+  
+  
+  popMatrix();
 }
 
 void mousePressed() {
@@ -466,23 +502,39 @@ void keyPressed() {
   } else if (key == '8'){
     scaleMode = !scaleMode;
   } else if (key == 'w'){
-    ps.wind();
+    for (int i = pss.length-1; i >= 0; i--) {
+      pss[i].wind();
+    }
+  } else if (key == 'o'){
+    for (int i = pss.length-1; i >= 0; i--) {
+      pss[i].overgrow();
+    }
+    //ps.overgrow();
+  } else if (key == 'u'){
+    for (int i = pss.length-1; i >= 0; i--) {
+      pss[i].unmake();
+    }
+    //ps.overgrow();
   }
   
   println(key);
 
-  if (key == 's') {
+  if (key == '1') {
     movieType = 1;
   }
-  if (key == '1') {
-    movieType = 2;
-  } 
-  
-  if (key == '2') {
+  if (key == '3') {
     movieType = 3;
   } 
   
-  if (key == '3') {
+  if (key == '4') {
     movieType = 4;
+  } 
+  
+  if (key == '2') {
+    movieType = 2;
+  }
+  
+  if (key == '5') {
+    movieType = 5;
   }
 }

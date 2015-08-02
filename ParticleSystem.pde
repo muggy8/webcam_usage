@@ -4,6 +4,9 @@ class ParticleSystem {
   PVector origin;
   PVector previousO;
   PVector lastSpawn;
+  boolean windMode = false;
+  boolean overgrowMode = false;
+  boolean make = true;
   
   ParticleSystem(PVector location) {
     origin = location.get();
@@ -13,15 +16,29 @@ class ParticleSystem {
   }
 
   void addParticle() {
-    PVector avarage;
-    avarage = new PVector((origin.x+previousO.x)/2, (origin.y+previousO.y)/2);
-    if (origin.dist(lastSpawn) > 35){
-      float deltaX = lastSpawn.x - origin.x;
-      float deltaY = lastSpawn.y - origin.y;
-      float ang = atan(deltaY/deltaX);
-      particles.add(new Particle(avarage,ang /*PVector.angleBetween( lastSpawn,origin)*/));
-      lastSpawn = origin.get();
+    if (make){
+      PVector avarage;
+      avarage = new PVector((origin.x+previousO.x)/2, (origin.y+previousO.y)/2);
+      if (origin.dist(lastSpawn) > 35){
+        float deltaX = lastSpawn.x - origin.x;
+        float deltaY = lastSpawn.y - origin.y;
+        float ang = atan(deltaY/deltaX);
+        particles.add(new Particle(avarage,ang /*PVector.angleBetween( lastSpawn,origin)*/));
+        lastSpawn = origin.get();
+        
+        if (overgrowMode){
+          overgrow();
+        }
+        
+        if (windMode){
+          wind();
+        }
+      }
     }
+  }
+  
+  void unmake(){
+    make = false;
   }
 
   void run() {
@@ -46,5 +63,14 @@ class ParticleSystem {
       Particle p = particles.get(i);
       p.setWind(true);
     }
+    windMode = true;
+  }
+  
+  void overgrow(){
+    for (int i = particles.size()-1; i >= 0; i--) {
+      Particle p = particles.get(i);
+      p.freez();
+    }
+    overgrowMode = true;
   }
 }
